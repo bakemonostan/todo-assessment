@@ -1,14 +1,16 @@
 "use client";
 import React, { useState } from "react";
 import { CustomCheckbox } from "./CustomCheckBox";
+
 const TodoApp = () => {
   const [todos, setTodos] = useState([
     { id: 1, text: "Complete online JavaScript course", completed: false },
     { id: 2, text: "Jog around the park 3x", completed: false },
   ]);
   const [newTodo, setNewTodo] = useState("");
-
   const [filter, setFilter] = useState("All");
+  const [editingTodo, setEditingTodo] = useState(null);
+  const [editedTodoText, setEditedTodoText] = useState("");
 
   const handleChange = (e) => {
     setNewTodo(e.target.value);
@@ -17,19 +19,23 @@ const TodoApp = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (newTodo.trim()) {
-      setTodos([
-        ...todos,
-        {
-          id: new Date().getTime(),
-          text: newTodo.trim(),
-          completed: false,
-        },
-      ]);
+      addTodo(newTodo.trim());
       setNewTodo("");
     }
   };
 
-  const handleToggle = (id) => {
+  const addTodo = (text) => {
+    setTodos([
+      ...todos,
+      {
+        id: new Date().getTime(),
+        text: text,
+        completed: false,
+      },
+    ]);
+  };
+
+  const toggleTodo = (id) => {
     setTodos(
       todos.map((todo) =>
         todo.id === id ? { ...todo, completed: !todo.completed } : todo
@@ -37,8 +43,26 @@ const TodoApp = () => {
     );
   };
 
-  const handleClearCompleted = () => {
+  const deleteTodo = (id) => {
+    setTodos(todos.filter((todo) => todo.id !== id));
+  };
+
+  const clearCompletedTodos = () => {
     setTodos(todos.filter((todo) => !todo.completed));
+  };
+
+  const handleEdit = (id, text) => {
+    setEditingTodo(id);
+    setEditedTodoText(text);
+  };
+
+  const handleSaveEdit = (id) => {
+    setTodos(
+      todos.map((todo) =>
+        todo.id === id ? { ...todo, text: editedTodoText } : todo
+      )
+    );
+    setEditingTodo(null);
   };
 
   const filteredTodos =
@@ -74,12 +98,21 @@ const TodoApp = () => {
         </form>
       </div>
 
-      <Todolist filteredTodos={filteredTodos} handleToggle={handleToggle} />
+      <Todolist
+        filteredTodos={filteredTodos}
+        handleToggle={toggleTodo}
+        handleDelete={deleteTodo}
+        handleEdit={handleEdit}
+        handleSaveEdit={handleSaveEdit}
+        editingTodo={editingTodo}
+        editedTodoText={editedTodoText}
+        setEditedTodoText={setEditedTodoText}
+      />
 
       <FilterComponent
         todos={todos}
         setFilter={setFilter}
-        handleClearCompleted={handleClearCompleted}
+        handleClearCompleted={clearCompletedTodos}
         filter={filter}
       />
     </div>
@@ -88,7 +121,16 @@ const TodoApp = () => {
 
 export default TodoApp;
 
-const Todolist = ({ filteredTodos = [], handleToggle = () => {} }) => {
+const Todolist = ({
+  filteredTodos = [],
+  handleToggle = () => {},
+  handleDelete = () => {},
+  handleEdit = () => {},
+  handleSaveEdit = () => {},
+  editingTodo,
+  editedTodoText,
+  setEditedTodoText,
+}) => {
   return (
     <div className="rounded-md bg-very-dark-desaturated-blue text-slate-400">
       {filteredTodos.map((todo) => (
@@ -96,23 +138,51 @@ const Todolist = ({ filteredTodos = [], handleToggle = () => {} }) => {
           key={todo.id}
           className="flex items-center justify-between px-4 py-5 border-b border-gray-700 last:border-b-0"
         >
-          <div className="flex items-center gap-3">
-            <CustomCheckbox
-              checked={todo.completed}
-              onChange={() => handleToggle(todo.id)}
+          {editingTodo === todo.id ? (
+            <input
+              type="text"
+              value={editedTodoText}
+              onChange={(e) => setEditedTodoText(e.target.value)}
+              className="flex-grow h-12 px-6 py-2 text-white bg-very-dark-desaturated-blue rounded-l-md focus:outline-none"
             />
-            <span className={`${todo.completed ? "line-through" : ""}`}>
-              {todo.text}
-            </span>
-          </div>
-          {todo.completed && (
-            <button
-              className="text-red-500 hover:text-red-600 focus:outline-none"
-              onClick={() => handleToggle(todo.id)}
-            >
-              Undo
-            </button>
+          ) : (
+            <div className="flex items-center w-full gap-3">
+              <CustomCheckbox
+                checked={todo.completed}
+                onChange={() => handleToggle(todo.id)}
+              />
+              <span
+                className={` text-sm ${todo.completed ? "line-through" : ""}`}
+              >
+                {todo.text}
+              </span>
+            </div>
           )}
+          <div>
+            {editingTodo === todo.id ? (
+              <span
+                onClick={() => handleSaveEdit(todo.id)}
+                className="font-bold text-green-600 cursor-pointer hover:underline"
+              >
+                Save
+              </span>
+            ) : (
+              <div className="flex flex-col gap-1 text-xs sm:flex-row">
+                <span
+                  onClick={() => handleEdit(todo.id, todo.text)}
+                  className="font-semibold cursor-pointer hover:underline"
+                >
+                  Edit
+                </span>
+                <span
+                  onClick={() => handleDelete(todo.id)}
+                  className="font-bold text-red-600 rounded-md cursor-pointer hover:underline"
+                >
+                  Delete
+                </span>
+              </div>
+            )}
+          </div>
         </div>
       ))}
     </div>
