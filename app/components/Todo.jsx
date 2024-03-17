@@ -127,9 +127,9 @@ const FilterComponent = ({
 }) => {
   return (
     <div className="p-1.5 rounded-md sm:p-3 bg-very-dark-desaturated-blue">
-      <div className="flex flex-col items-center justify-center gap-3 text-sm text-gray-400 sm:flex-row">
+      <div className="flex flex-col items-center justify-center gap-3 text-sm text-gray-400 sm:justify-between sm:flex-row">
         <span>{todos.filter((todo) => !todo.completed).length} items left</span>
-        <div className="flex gap-2">
+        <div className="flex gap-2 sm:gap-4">
           <button
             onClick={() => setFilter("All")}
             className={` ${filter === "All" ? "text-white" : ""}`}
@@ -151,7 +151,7 @@ const FilterComponent = ({
         </div>
         <button
           onClick={handleClearCompleted}
-          className=" hover:text-white focus:outline-none w-36"
+          className=" hover:text-white focus:outline-none"
         >
           Clear Completed
         </button>
