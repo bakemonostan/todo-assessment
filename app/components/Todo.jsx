@@ -5,10 +5,6 @@ const TodoApp = () => {
   const [todos, setTodos] = useState([
     { id: 1, text: "Complete online JavaScript course", completed: false },
     { id: 2, text: "Jog around the park 3x", completed: false },
-    { id: 3, text: "10 minutes meditation", completed: false },
-    { id: 4, text: "Read for 1 hour", completed: false },
-    { id: 5, text: "Pick up groceries", completed: false },
-    { id: 6, text: "Complete Todo App on Frontend Mentor", completed: false },
   ]);
   const [newTodo, setNewTodo] = useState("");
 
@@ -130,32 +126,32 @@ const FilterComponent = ({
   filter,
 }) => {
   return (
-    <div className="p-3 rounded-md bg-very-dark-desaturated-blue">
-      <div className="flex justify-between mt-4 text-gray-400">
+    <div className="p-1.5 rounded-md sm:p-3 bg-very-dark-desaturated-blue">
+      <div className="flex flex-col items-center justify-center gap-3 text-sm text-gray-400 sm:flex-row">
         <span>{todos.filter((todo) => !todo.completed).length} items left</span>
-        <div>
+        <div className="flex gap-2">
           <button
             onClick={() => setFilter("All")}
-            className={`mr-2 ${filter === "All" ? "text-white" : ""}`}
+            className={` ${filter === "All" ? "text-white" : ""}`}
           >
             All
           </button>
           <button
             onClick={() => setFilter("Active")}
-            className={`mr-2 ${filter === "Active" ? "text-white" : ""}`}
+            className={` ${filter === "Active" ? "text-white" : ""}`}
           >
             Active
           </button>
           <button
             onClick={() => setFilter("Completed")}
-            className={`mr-2 ${filter === "Completed" ? "text-white" : ""}`}
+            className={` ${filter === "Completed" ? "text-white" : ""}`}
           >
             Completed
           </button>
         </div>
         <button
           onClick={handleClearCompleted}
-          className="hover:text-white focus:outline-none"
+          className=" hover:text-white focus:outline-none w-36"
         >
           Clear Completed
         </button>
