@@ -49,7 +49,7 @@ const TodoApp = () => {
       : todos;
 
   return (
-    <div className="absolute w-full max-w-md px-3 mx-auto -translate-x-1/2   top-[10rem] left-1/2 space-y-8">
+    <div className="absolute w-full max-w-md px-7 sm:px-4 mx-auto -translate-x-1/2   top-[10rem] left-1/2 space-y-8">
       <div>
         <h1 className="text-white font-bold text-[calc(2rem+1.5vw)] tracking-[1rem]">
           TODO
